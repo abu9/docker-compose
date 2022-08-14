@@ -1,0 +1,25 @@
+version: '3'
+services:
+  adguardhome:
+    image:  docker.io/adguard/adguardhome:latest
+    container_name: adguardhome
+    hostname: adguardhome 
+    volumes:
+      - /mnt/dockerapp/adguardhome/confdir:/opt/adguardhome/conf
+      - /mnt/dockerapp/adguardhome/workdir:/opt/adguardhome/work
+    restart: unless-stopped
+    networks: 
+      localsrv:
+        ipv4_address: "192.168.2.1"
+      
+networks:
+  localsrv:
+    driver: "ipvlan"
+    driver_opts:
+      ipvlan_mode: "l2"
+      parent: "eth0"
+    ipam:
+      config:
+        - subnet: "192.168.2.9/24"
+          gateway: "192.168.2.254"
+    external: true

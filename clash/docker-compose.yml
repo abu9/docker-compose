@@ -1,0 +1,52 @@
+version: '3'
+services:
+  clash:
+    # ghcr.io/dreamacro/clash
+    # ghcr.io/dreamacro/clash-premium
+    # dreamacro/clash
+    # dreamacro/clash-premium
+    image: dreamacro/clash-premium
+    container_name: clash
+    volumes:
+      - /mnt/dockerapp/clash/config.yaml:/root/.config/clash/config.yaml:ro
+      - /mnt/dockerapp/clash/clash-dashboard:/ui # dashboard volume
+    ports:
+      - "7890:7890"
+     # - "7891:7891"
+      - "7893:7893"
+      - "9090:9090" # external controller (Restful API)
+    # # TUN
+    # cap_add:
+    #   - NET_ADMIN
+    # devices:
+    #   - /dev/net/tun
+    restart: unless-stopped
+    networks: 
+      localsrv:
+        ipv4_address: "192.168.2.2"
+
+  yacd:
+    image: haishanh/yacd:master
+    container_name: yacd
+    depends_on:
+      - clash
+    network_mode: "bridge"
+    ports:
+      - "1234:80"
+    restart: "always"
+    extra_hosts:
+      - "clash:192.168.2.2"
+    environment:
+      - YACD_DEFAULT_BACKEND=http://192.168.2.2:9090
+      
+networks:
+  localsrv:
+    driver: "ipvlan"
+    driver_opts:
+      ipvlan_mode: "l2"
+      parent: "eth0"
+    ipam:
+      config:
+        - subnet: "192.168.2.9/24"
+          gateway: "192.168.2.254"
+    external: true

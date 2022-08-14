@@ -1,0 +1,17 @@
+version: '3'
+services:
+  shadowsocks:
+    image:  shadowsocks/shadowsocks-libev:latest
+    container_name: shadowsocks
+    hostname: influxdb2 
+    env_file: .env
+    environment:
+      TZ: Hongkong
+      DNS_ADDRS: 8.8.8.8,8.8.4.4
+      SERVER_ADDR: 0.0.0.0
+      SERVER_PORT: 8388
+      TIMEOUT: 300
+    ports:
+      - "8388:8388"
+    restart: unless-stopped
+    network_mode: bridge

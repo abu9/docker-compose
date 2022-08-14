@@ -1,0 +1,22 @@
+version: '3'
+services:
+  influxdb2:
+    image:  docker.io/influxdb:2.3.0
+    container_name: influxdb2
+    hostname: influxdb2 
+    environment:
+      TZ: Hongkong
+    volumes:
+      - /mnt/dockerapp/influxdb2:/var/lib/influxdb2
+      - /mnt/backup/influxdb:/backup
+    ports:
+      - "8086:8086"
+    restart: unless-stopped
+    network_mode: bridge
+    networks: 
+      hassio:
+
+      
+networks:
+  hassio:
+    external: true
