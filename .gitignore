@@ -56,3 +56,4 @@ Thumbs.db
 # IDE stuff #
 ######################
 .idea
+homebridge/homebridge_config.json
